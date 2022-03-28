@@ -145,7 +145,6 @@
 				D0A46052F0418345F0DC2003 /* Pods-BlueDot-BlueDotTests.debug.xcconfig */,
 				B5142105ED9D478ACF6E47C8 /* Pods-BlueDot-BlueDotTests.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -485,6 +484,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 2JRH8X4FDS;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = BlueDot/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -511,6 +511,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 2JRH8X4FDS;
 				INFOPLIST_FILE = BlueDot/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
