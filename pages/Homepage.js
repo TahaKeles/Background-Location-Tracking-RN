@@ -1,5 +1,5 @@
 import React from 'react';
-import {Switch, Text, SafeAreaView} from 'react-native';
+import {Switch, Text, SafeAreaView, View, Button} from 'react-native';
 
 import BackgroundGeolocation, {
   Location,
@@ -9,10 +9,15 @@ import BackgroundGeolocation, {
 import Geolocation from '@react-native-community/geolocation';
 import MapView, {PROVIDER_GOOGLE, Marker, LatLng} from 'react-native-maps';
 
-const Homepage = () => {
+const Homepage = props => {
   const [enabled, setEnabled] = React.useState(false);
   const [location, setLocation] = React.useState('');
   const [coord, setCoord] = React.useState(LatLng);
+
+  function gotoTripPage() {
+    props.navigation.navigate('Trippage');
+  }
+
   let initialRegion = {
     latitude: 39.890622,
     longitude: 32.793109,
@@ -105,24 +110,14 @@ const Homepage = () => {
   }, [enabled]);
 
   return (
-    /*<SafeAreaView style={{alignItems: 'center'}}>
-      <Text>Click to enable BackgroundGeolocation</Text>
-      <Switch value={enabled} onValueChange={setEnabled} />
-      <Text style={{fontSize: 12}}>{location}</Text>
-    </SafeAreaView>*/
     <MapView
       provider={PROVIDER_GOOGLE}
       style={{flex: 1}}
-      initialRegion={{
-        latitude: 37.78825,
-        longitude: -122.4324,
-        latitudeDelta: 0.0922,
-        longitudeDelta: 0.0421,
-      }}>
-      <SafeAreaView style={{flex: 1}}>
-        <Text style={{alignSelf: 'center'}}>Haritaya yaz allasen</Text>
+      initialRegion={initialRegion}>
+      <SafeAreaView>
         <Text>Click to enable BackgroundGeolocation</Text>
         <Switch value={enabled} onValueChange={setEnabled} />
+        <Button onPress={gotoTripPage} title="Trips" color="#841584" />
         <Text style={{fontSize: 12}}>{location}</Text>
       </SafeAreaView>
     </MapView>
@@ -130,3 +125,23 @@ const Homepage = () => {
 };
 
 export {Homepage};
+
+/*
+
+
+    <View style={{flex: 1}}>
+      <MapView
+        provider={PROVIDER_GOOGLE}
+        style={{flex: 1}}
+        initialRegion={initialRegion}>
+        <SafeAreaView style={{flex: 1}}>
+          <Text style={{alignSelf: 'center'}}>Haritaya yaz allasen</Text>
+          <Text>Click to enable BackgroundGeolocation</Text>
+          <Switch value={enabled} onValueChange={setEnabled} />
+          <Text style={{fontSize: 12}}>{location}</Text>
+        </SafeAreaView>
+      </MapView>
+    </View>
+
+
+*/

@@ -1,5 +1,5 @@
 import React from 'react';
-import {Switch, Text, SafeAreaView} from 'react-native';
+import {Switch, Text, SafeAreaView, View} from 'react-native';
 
 const Trippage = () => {
   return (
