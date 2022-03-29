@@ -23,6 +23,7 @@ const Homepage = props => {
   const [location, setLocation] = React.useState('');
   const [coord, setCoord] = React.useState(LatLng);
   const [text, onChangeText] = React.useState('Useless Text');
+  const [distance, setDistance] = React.useState(0);
 
   const [region, setRegion] = React.useState({
     latitude: 39.890622,
@@ -55,11 +56,32 @@ const Homepage = props => {
     setEnabled(!enabled);
   }
 
+  function goToCurrentLocation() {
+    Geolocation.getCurrentPosition(pos => {
+      const crd = pos.coords;
+      console.log(crd);
+      setRegion({
+        latitude: crd.latitude,
+        longitude: crd.longitude,
+        latitudeDelta: 0.0421,
+        longitudeDelta: 0.0421,
+      });
+    }).catch(err => {
+      console.log(err);
+    });
+  }
+
   React.useEffect(() => {
     /// 1.  Subscribe to events.
     const onLocation = BackgroundGeolocation.onLocation(location => {
       console.log('[onLocation]', location);
       setLocation(JSON.stringify(location, null, 2));
+      setRegion({
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude,
+        latitudeDelta: 0.02,
+        longitudeDelta: 0.02,
+      });
     });
 
     const onMotionChange = BackgroundGeolocation.onMotionChange(event => {
@@ -150,7 +172,12 @@ const Homepage = props => {
       <MapView
         provider={PROVIDER_GOOGLE}
         style={{flex: 1}}
-        initialRegion={region}>
+        initialRegion={region}
+        region={region}>
+        <Marker coordinate={region} />
+      </MapView>
+
+      <View style={styles.footer}>
         <View style={styles.freeDrivingButton}>
           <TouchableOpacity
             style={{flexDirection: 'row', justifyContent: 'space-between'}}
@@ -163,29 +190,48 @@ const Homepage = props => {
             <Text style={styles.freeDrivingText}>Free Driving</Text>
           </TouchableOpacity>
         </View>
-        <View styles={styles.middleIcon}>
-          <TouchableOpacity
-            style={{
-              justifyContent: 'center',
-              alignContent: 'center',
-            }}>
-            <Text>O</Text>
-          </TouchableOpacity>
-        </View>
-      </MapView>
+        <TouchableOpacity
+          style={{
+            justifyContent: 'center',
+            alignContent: 'center',
+            borderRadius: 25,
+            width: 50,
+            height: 50,
+            backgroundColor: 'gray',
+            marginLeft: 30,
+            marginTop: 15,
+          }}
+          onPress={goToCurrentLocation}>
+          <Text style={{alignSelf: 'center'}}>ORTA</Text>
+        </TouchableOpacity>
+
+        <Text style={styles.kmText}>{distance} KM </Text>
+      </View>
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
+  kmText: {
+    marginTop: 15,
+    fontSize: 24,
+    marginLeft: 30,
+    alignSelf: 'center',
+  },
+  footer: {
+    height: 50,
+    backgroundColor: '#f4f4f4',
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    alignContent: 'center',
+  },
   middleIcon: {
-    position: 'absolute',
-    bottom: 30,
-    end: 40,
-    backgroundColor: 'white',
+    backgroundColor: 'black',
     borderRadius: 15,
     width: 30,
     height: 30,
+    marginLeft: 30,
   },
   input: {
     marginLeft: 12,
@@ -225,12 +271,11 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   freeDrivingButton: {
-    position: 'absolute',
+    marginTop: 15,
+    marginLeft: 30,
     backgroundColor: '#4B6277',
-    bottom: 30,
-    start: 40,
     borderRadius: 14,
-    height: 60,
+    height: 50,
     width: 140,
     justifyContent: 'center',
     alignContent: 'center',
@@ -243,7 +288,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     padding: 12,
   },
-  button: {},
   text: {
     textAlign: 'center',
   },
