@@ -6,9 +6,31 @@ import BackgroundGeolocation, {
   Subscription,
 } from 'react-native-background-geolocation';
 
+import Geolocation from '@react-native-community/geolocation';
+import MapView, {PROVIDER_GOOGLE, Marker, LatLng} from 'react-native-maps';
+
 const App = () => {
   const [enabled, setEnabled] = React.useState(false);
   const [location, setLocation] = React.useState('');
+  const [coord, setCoord] = React.useState(LatLng);
+  let initialRegion = {
+    latitude: 39.890622,
+    longitude: 32.793109,
+    latitudeDelta: 0.02,
+    longitudeDelta: 0.02,
+  };
+  Geolocation.getCurrentPosition(
+    c => {
+      setCoord({
+        latitude: c.coords.latitude,
+        longitude: c.coords.longitude,
+      });
+    },
+    error => console.log(error),
+    {
+      enableHighAccuracy: true,
+    },
+  );
 
   React.useEffect(() => {
     /// 1.  Subscribe to events.
@@ -83,11 +105,24 @@ const App = () => {
   }, [enabled]);
 
   return (
-    <SafeAreaView style={{alignItems: 'center'}}>
+    /*<SafeAreaView style={{alignItems: 'center'}}>
       <Text>Click to enable BackgroundGeolocation</Text>
       <Switch value={enabled} onValueChange={setEnabled} />
       <Text style={{fontSize: 12}}>{location}</Text>
-    </SafeAreaView>
+    </SafeAreaView>*/
+    <MapView
+      provider={PROVIDER_GOOGLE}
+      style={{flex: 1}}
+      initialRegion={{
+        latitude: 37.78825,
+        longitude: -122.4324,
+        latitudeDelta: 0.0922,
+        longitudeDelta: 0.0421,
+      }}>
+      <SafeAreaView style={{flex: 1}}>
+        <Text style={{alignSelf: 'center'}}>Haritaya yaz allasen</Text>
+      </SafeAreaView>
+    </MapView>
   );
 };
 
