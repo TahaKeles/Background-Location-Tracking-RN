@@ -13,6 +13,8 @@
     "@react-native-community/geolocation": "^2.0.2",
     "react": "17.0.2",
     "react-native": "0.67.4",
+    "react-native-background-fetch": "^4.0.5",
+    "react-native-background-geolocation": "^4.4.4",
     "react-native-maps": "^0.30.1"
   },
   "devDependencies": {

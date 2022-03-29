@@ -11,6 +11,7 @@
 		13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
+		57CCB5AF27F2811900484CBA /* RNBackgroundFetch+AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 57CCB5AE27F2811900484CBA /* RNBackgroundFetch+AppDelegate.m */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		82B25106357E31AA9803B11B /* libPods-BlueDot.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 08254827D7FDC70711E2DC6A /* libPods-BlueDot.a */; };
 		B880A5C1ADC0A03DB63E34D7 /* libPods-BlueDot-BlueDotTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 53A1B6F1E744483C59B3611D /* libPods-BlueDot-BlueDotTests.a */; };
@@ -38,6 +39,7 @@
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = BlueDot/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = BlueDot/main.m; sourceTree = "<group>"; };
 		53A1B6F1E744483C59B3611D /* libPods-BlueDot-BlueDotTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-BlueDot-BlueDotTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		57CCB5AE27F2811900484CBA /* RNBackgroundFetch+AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "RNBackgroundFetch+AppDelegate.m"; path = "../node_modules/react-native-background-fetch/ios/RNBackgroundFetch/RNBackgroundFetch+AppDelegate.m"; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = BlueDot/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		99538D1FEC87C39141FF4C94 /* Pods-BlueDot.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BlueDot.release.xcconfig"; path = "Target Support Files/Pods-BlueDot/Pods-BlueDot.release.xcconfig"; sourceTree = "<group>"; };
 		B5142105ED9D478ACF6E47C8 /* Pods-BlueDot-BlueDotTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BlueDot-BlueDotTests.release.xcconfig"; path = "Target Support Files/Pods-BlueDot-BlueDotTests/Pods-BlueDot-BlueDotTests.release.xcconfig"; sourceTree = "<group>"; };
@@ -86,6 +88,7 @@
 		13B07FAE1A68108700A75B9A /* BlueDot */ = {
 			isa = PBXGroup;
 			children = (
+				57CCB5AE27F2811900484CBA /* RNBackgroundFetch+AppDelegate.m */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
@@ -410,6 +413,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				57CCB5AF27F2811900484CBA /* RNBackgroundFetch+AppDelegate.m in Sources */,
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
 			);

@@ -5664,6 +5664,18 @@
   "resolved" "https://registry.npmjs.org/react-is/-/react-is-16.13.1.tgz"
   "version" "16.13.1"
 
+"react-native-background-fetch@^4.0.5", "react-native-background-fetch@~4.0.4":
+  "integrity" "sha512-RZx51NRtGX+BFQXW026HUbXzOvCsQX76uBjU2QbikrtE0BefDbhpUPkM8VwufYod0aN5IQ480UF+D9bwUpsxmg=="
+  "resolved" "https://registry.npmjs.org/react-native-background-fetch/-/react-native-background-fetch-4.0.5.tgz"
+  "version" "4.0.5"
+
+"react-native-background-geolocation@^4.4.4":
+  "integrity" "sha512-c8G0bze/dEt9BnzHpYnO9LmLwn1tNGX6JbO41/yeogYrb/IMTHeJpRZFnrQwZ2g3uHIrdRhvV/snnegl2DdpQg=="
+  "resolved" "https://registry.npmjs.org/react-native-background-geolocation/-/react-native-background-geolocation-4.4.4.tgz"
+  "version" "4.4.4"
+  dependencies:
+    "react-native-background-fetch" "~4.0.4"
+
 "react-native-codegen@^0.0.8":
   "integrity" "sha512-k/944+0XD+8l7zDaiKfYabyEKmAmyZgS1mj+4LcSRPyHnrjgCHKrh/Y6jM6kucQ6xU1+1uyMmF/dSkikxK8i+Q=="
   "resolved" "https://registry.npmjs.org/react-native-codegen/-/react-native-codegen-0.0.8.tgz"
@@ -5693,7 +5705,7 @@
     "normalize-css-color" "^1.0.2"
     "prop-types" "^15.6.0"
 
-"react-native@*", "react-native@>= 0.51", "react-native@0.67.4":
+"react-native@*", "react-native@>= 0.51", "react-native@>=0.28.0", "react-native@>=0.36.0", "react-native@0.67.4":
   "integrity" "sha512-NA9d9lNJu9TViEJu2uZxWXUP+QNUilGGA5tdMbVFedNroOH1lnQ3n/FAVoGK1gqGarCgNTtheBxUpEa979Cu8w=="
   "resolved" "https://registry.npmjs.org/react-native/-/react-native-0.67.4.tgz"
   "version" "0.67.4"
