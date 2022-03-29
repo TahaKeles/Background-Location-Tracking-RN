@@ -1,5 +1,13 @@
 import React from 'react';
-import {Switch, Text, SafeAreaView, View, Button} from 'react-native';
+import {
+  Switch,
+  Text,
+  SafeAreaView,
+  View,
+  Button,
+  StyleSheet,
+  TouchableOpacity,
+} from 'react-native';
 
 import BackgroundGeolocation, {
   Location,
@@ -13,9 +21,35 @@ const Homepage = props => {
   const [enabled, setEnabled] = React.useState(false);
   const [location, setLocation] = React.useState('');
   const [coord, setCoord] = React.useState(LatLng);
+  const [region, setRegion] = React.useState({
+    latitude: 39.890622,
+    longitude: 32.793109,
+    latitudeDelta: 0.02,
+    longitudeDelta: 0.02,
+  });
 
   function gotoTripPage() {
     props.navigation.navigate('Trippage');
+  }
+
+  const zoomDelta = 0.005;
+  const onZoom = zoomSign => {
+    const zoomedRegion = {
+      latitude: region.latitude,
+      longitude: region.longitude,
+      latitudeDelta: region.latitudeDelta - zoomDelta * zoomSign,
+      longitudeDelta: region.longitudeDelta - zoomDelta * zoomSign,
+    };
+    setRegion(zoomedRegion);
+  };
+  function onZoomIn() {
+    console.log('1');
+    onZoom(1);
+  }
+  const onZoomOut = () => onZoom(-1);
+
+  function openFreeDrive() {
+    setEnabled(!enabled);
   }
 
   let initialRegion = {
@@ -113,16 +147,74 @@ const Homepage = props => {
     <MapView
       provider={PROVIDER_GOOGLE}
       style={{flex: 1}}
-      initialRegion={initialRegion}>
-      <SafeAreaView>
-        <Text>Click to enable BackgroundGeolocation</Text>
-        <Switch value={enabled} onValueChange={setEnabled} />
-        <Button onPress={gotoTripPage} title="Trips" color="#841584" />
-        <Text style={{fontSize: 12}}>{location}</Text>
-      </SafeAreaView>
+      initialRegion={region}>
+      <View style={styles.freeDrivingButton}>
+        <TouchableOpacity
+          style={{flexDirection: 'row', justifyContent: 'space-between'}}
+          onPress={openFreeDrive}>
+          {enabled ? (
+            <View style={styles.lightOn} />
+          ) : (
+            <View style={styles.lightOff} />
+          )}
+          <Text style={styles.freeDrivingText}>Free Driving</Text>
+        </TouchableOpacity>
+      </View>
     </MapView>
   );
 };
+
+const styles = StyleSheet.create({
+  lightOff: {
+    borderWidth: 1,
+    borderColor: 'white',
+    borderRadius: 15,
+    backgroundColor: 'gray',
+    height: 30,
+    width: 30,
+    marginLeft: 10,
+  },
+  lightOn: {
+    borderWidth: 1,
+    borderColor: 'white',
+    borderRadius: 15,
+    backgroundColor: 'green',
+    height: 30,
+    width: 30,
+    marginLeft: 10,
+  },
+  freeDrivingText: {
+    color: 'white',
+    alignSelf: 'center',
+    marginRight: 10,
+  },
+  freeDrivingButton: {
+    position: 'absolute',
+    backgroundColor: '#4B6277',
+    bottom: 30,
+    start: 40,
+    borderRadius: 14,
+    height: 60,
+    width: 140,
+    justifyContent: 'center',
+    alignContent: 'center',
+  },
+  buttonContainer: {
+    position: 'absolute',
+    bottom: 30,
+    end: 20,
+    borderRadius: 5,
+    backgroundColor: '#fff',
+    padding: 12,
+  },
+  button: {},
+  text: {
+    textAlign: 'center',
+  },
+  spacer: {
+    marginVertical: 7,
+  },
+});
 
 export {Homepage};
 
