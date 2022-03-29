@@ -7,6 +7,7 @@ import {
   Button,
   StyleSheet,
   TouchableOpacity,
+  TextInput,
 } from 'react-native';
 
 import BackgroundGeolocation, {
@@ -21,6 +22,8 @@ const Homepage = props => {
   const [enabled, setEnabled] = React.useState(false);
   const [location, setLocation] = React.useState('');
   const [coord, setCoord] = React.useState(LatLng);
+  const [text, onChangeText] = React.useState('Useless Text');
+
   const [region, setRegion] = React.useState({
     latitude: 39.890622,
     longitude: 32.793109,
@@ -51,25 +54,6 @@ const Homepage = props => {
   function openFreeDrive() {
     setEnabled(!enabled);
   }
-
-  let initialRegion = {
-    latitude: 39.890622,
-    longitude: 32.793109,
-    latitudeDelta: 0.02,
-    longitudeDelta: 0.02,
-  };
-  Geolocation.getCurrentPosition(
-    c => {
-      setCoord({
-        latitude: c.coords.latitude,
-        longitude: c.coords.longitude,
-      });
-    },
-    error => console.log(error),
-    {
-      enableHighAccuracy: true,
-    },
-  );
 
   React.useEffect(() => {
     /// 1.  Subscribe to events.
@@ -123,9 +107,6 @@ const Homepage = props => {
     });
 
     return () => {
-      // Remove BackgroundGeolocation event-subscribers when the View is removed or refreshed
-      // during development live-reload.  Without this, event-listeners will accumulate with
-      // each refresh during live-reload.
       onLocation.remove();
       onMotionChange.remove();
       onActivityChange.remove();
@@ -133,8 +114,18 @@ const Homepage = props => {
     };
   }, []);
 
-  /// 3. start / stop BackgroundGeolocation
   React.useEffect(() => {
+    Geolocation.getCurrentPosition(pos => {
+      const crd = pos.coords;
+      setRegion({
+        latitude: crd.latitude,
+        longitude: crd.longitude,
+        latitudeDelta: 0.0421,
+        longitudeDelta: 0.0421,
+      });
+    }).catch(err => {
+      console.log(err);
+    });
     if (enabled) {
       BackgroundGeolocation.start();
     } else {
@@ -144,27 +135,72 @@ const Homepage = props => {
   }, [enabled]);
 
   return (
-    <MapView
-      provider={PROVIDER_GOOGLE}
-      style={{flex: 1}}
-      initialRegion={region}>
-      <View style={styles.freeDrivingButton}>
-        <TouchableOpacity
-          style={{flexDirection: 'row', justifyContent: 'space-between'}}
-          onPress={openFreeDrive}>
-          {enabled ? (
-            <View style={styles.lightOn} />
-          ) : (
-            <View style={styles.lightOff} />
-          )}
-          <Text style={styles.freeDrivingText}>Free Driving</Text>
-        </TouchableOpacity>
+    <SafeAreaView style={{flex: 1, backgroundColor: '#f4f4f4'}}>
+      <View style={styles.header}>
+        <View style={{marginLeft: 16, marginVertical: 4}}>
+          <Button onPress={gotoTripPage} title="Trips" color="black"></Button>
+        </View>
+        <TextInput
+          style={styles.input}
+          onChangeText={onChangeText}
+          value={text}
+        />
       </View>
-    </MapView>
+
+      <MapView
+        provider={PROVIDER_GOOGLE}
+        style={{flex: 1}}
+        initialRegion={region}>
+        <View style={styles.freeDrivingButton}>
+          <TouchableOpacity
+            style={{flexDirection: 'row', justifyContent: 'space-between'}}
+            onPress={openFreeDrive}>
+            {enabled ? (
+              <View style={styles.lightOn} />
+            ) : (
+              <View style={styles.lightOff} />
+            )}
+            <Text style={styles.freeDrivingText}>Free Driving</Text>
+          </TouchableOpacity>
+        </View>
+        <View styles={styles.middleIcon}>
+          <TouchableOpacity
+            style={{
+              justifyContent: 'center',
+              alignContent: 'center',
+            }}>
+            <Text>O</Text>
+          </TouchableOpacity>
+        </View>
+      </MapView>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
+  middleIcon: {
+    position: 'absolute',
+    bottom: 30,
+    end: 40,
+    backgroundColor: 'white',
+    borderRadius: 15,
+    width: 30,
+    height: 30,
+  },
+  input: {
+    marginLeft: 12,
+    marginRight: 16,
+    backgroundColor: 'gray',
+    borderRadius: 12,
+    flex: 1,
+    marginVertical: 8,
+  },
+  header: {
+    height: 50,
+    backgroundColor: '#f4f4f4',
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+  },
   lightOff: {
     borderWidth: 1,
     borderColor: 'white',
