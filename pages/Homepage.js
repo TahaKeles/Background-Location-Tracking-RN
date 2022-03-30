@@ -70,21 +70,13 @@ const Homepage = props => {
   }
   function openFreeDrive() {
     if (enabled) {
-      /*Geolocation.getCurrentPosition(pos => {
-        const crd = pos.coords;
-        setRegion({
-          latitude: crd.latitude,
-          longitude: crd.longitude,
-          latitudeDelta: 0.0421,
-          longitudeDelta: 0.0421,
-        });
-      }).catch(err => {
-        console.log(err);
-      });*/
-
       setTrips(prev => {
-        console.log('Trips : ', prev);
-        return prev.concat(history);
+        if (prev.length === 0) {
+          return [history, distance];
+        }
+        //console.log('Trips : ', prev);
+        //console.log('Type of History : ', typeof history);
+        return prev.concat([history, distance]);
       });
       setRegion({
         latitude: history[history.length - 1].latitude,
@@ -98,6 +90,7 @@ const Homepage = props => {
       setLocation('');
     }
     setEnabled(!enabled);
+    console.log('Trips : ', trips);
   }
 
   function goToCurrentLocation() {
@@ -118,10 +111,7 @@ const Homepage = props => {
   React.useEffect(() => {
     /// 1.  Subscribe to events.
     const onLocation = BackgroundGeolocation.onLocation(location => {
-      //console.log('[onLocation]', location);
       setLocation(JSON.stringify(location, null, 2));
-      console.log('Type of location : ', typeof location);
-      //setLocation(location);
       setHistory(prev => {
         setDistance(prevDistance => {
           if (prev.length === 0) {
@@ -136,7 +126,6 @@ const Homepage = props => {
           );
           return prevDistance + add;
         });
-        console.log('Prev :', prev);
         return prev.concat({
           latitude: location.coords.latitude,
           longitude: location.coords.longitude,
