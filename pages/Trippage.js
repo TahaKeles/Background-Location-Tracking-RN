@@ -36,7 +36,12 @@ const DATA = [
   },
 ];
 
-const Trippage = () => {
+const Trippage = props => {
+  const {onProgressed, trips} = props.route.params;
+
+  console.log('onProgress : ', onProgressed);
+  console.log('Trips : ', trips);
+
   const coordinates = [
     {
       latitude: 22.306885,

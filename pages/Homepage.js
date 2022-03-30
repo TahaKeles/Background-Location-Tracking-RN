@@ -65,18 +65,49 @@ const Homepage = props => {
     longitudeDelta: 0.0421,
   });
 
+  const [tripsOnProgress, setTripsOnProgress] = React.useState([]);
+
   function gotoTripPage() {
-    props.navigation.navigate('Trippage');
+    if (enabled) {
+      Geolocation.getCurrentPosition(pos => {
+        const crd = pos.coords;
+        console.log(crd);
+        setRegion({
+          latitude: crd.latitude,
+          longitude: crd.longitude,
+          latitudeDelta: 0.0421,
+          longitudeDelta: 0.0421,
+        });
+        props.navigation.navigate('Trippage', {
+          onProgressed: [
+            {
+              coords: {latitude: crd.latitude, longitude: crd.longitude},
+              distance: distance,
+            },
+          ],
+          trips: trips,
+        });
+      }).catch(err => {
+        console.log(err);
+      });
+    } else {
+      props.navigation.navigate('Trippage', {
+        onProgressed: [],
+        trips: trips,
+      });
+    }
   }
   function openFreeDrive() {
     if (enabled) {
       setTrips(prev => {
         if (prev.length === 0) {
-          return [history, distance];
+          return [{coords: history, distance: distance, progress: false}];
         }
-        //console.log('Trips : ', prev);
-        //console.log('Type of History : ', typeof history);
-        return prev.concat([history, distance]);
+        return prev.concat({
+          coords: history,
+          distance: distance,
+          progress: false,
+        });
       });
       setRegion({
         latitude: history[history.length - 1].latitude,
@@ -84,13 +115,13 @@ const Homepage = props => {
         latitudeDelta: 0.0421,
         longitudeDelta: 0.0421,
       });
-      console.log('Region : ', region);
       setHistory([]);
       setDistance(0);
       setLocation('');
+      setTripsOnProgress([]);
     }
     setEnabled(!enabled);
-    console.log('Trips : ', trips);
+    //console.log('Trips : ', trips);
   }
 
   function goToCurrentLocation() {
@@ -137,6 +168,13 @@ const Homepage = props => {
         latitudeDelta: 0.02,
         longitudeDelta: 0.02,
       });
+      //console.log('History : ', history);
+      //console.log('Distance : ', distance);
+      setTripsOnProgress(prev => {
+        return [{coords: history, distance: distance}];
+      });
+      //setTripsOnProgress([{coords: history, distance: distance}]);
+      //console.log('Trips on progress : ', tripsOnProgress);
     });
 
     const onMotionChange = BackgroundGeolocation.onMotionChange(event => {
