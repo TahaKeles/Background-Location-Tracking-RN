@@ -18,41 +18,85 @@ import BackgroundGeolocation, {
 import Geolocation from '@react-native-community/geolocation';
 import MapView, {PROVIDER_GOOGLE, Marker, LatLng} from 'react-native-maps';
 
+function distance_(lat1, lat2, lon1, lon2) {
+  // The math module contains a function
+  // named toRadians which converts from
+  // degrees to radians.
+
+  lon1 = Number(lon1);
+  lon2 = Number(lon2);
+  lat1 = Number(lat1);
+  lat2 = Number(lat2);
+
+  lon1 = (lon1 * Math.PI) / 180;
+  lon2 = (lon2 * Math.PI) / 180;
+  lat1 = (lat1 * Math.PI) / 180;
+  lat2 = (lat2 * Math.PI) / 180;
+
+  // Haversine formula
+  let dlon = lon2 - lon1;
+  let dlat = lat2 - lat1;
+  let a =
+    Math.pow(Math.sin(dlat / 2), 2) +
+    Math.cos(lat1) * Math.cos(lat2) * Math.pow(Math.sin(dlon / 2), 2);
+
+  let c = 2 * Math.asin(Math.sqrt(a));
+
+  // Radius of earth in kilometers. Use 3956
+  // for miles
+  let r = 6371;
+
+  // calculate the result
+  return c * r;
+}
+
 const Homepage = props => {
   const [enabled, setEnabled] = React.useState(false);
   const [location, setLocation] = React.useState('');
   const [coord, setCoord] = React.useState(LatLng);
   const [text, onChangeText] = React.useState('Useless Text');
   const [distance, setDistance] = React.useState(0);
-
+  const [history, setHistory] = React.useState([]);
+  const [trips, setTrips] = React.useState([]);
   const [region, setRegion] = React.useState({
-    latitude: 39.890622,
-    longitude: 32.793109,
-    latitudeDelta: 0.02,
-    longitudeDelta: 0.02,
+    latitude: 38,
+    longitude: 39,
+    latitudeDelta: 0.0421,
+    longitudeDelta: 0.0421,
   });
 
   function gotoTripPage() {
     props.navigation.navigate('Trippage');
   }
-
-  const zoomDelta = 0.005;
-  const onZoom = zoomSign => {
-    const zoomedRegion = {
-      latitude: region.latitude,
-      longitude: region.longitude,
-      latitudeDelta: region.latitudeDelta - zoomDelta * zoomSign,
-      longitudeDelta: region.longitudeDelta - zoomDelta * zoomSign,
-    };
-    setRegion(zoomedRegion);
-  };
-  function onZoomIn() {
-    console.log('1');
-    onZoom(1);
-  }
-  const onZoomOut = () => onZoom(-1);
-
   function openFreeDrive() {
+    if (enabled) {
+      /*Geolocation.getCurrentPosition(pos => {
+        const crd = pos.coords;
+        setRegion({
+          latitude: crd.latitude,
+          longitude: crd.longitude,
+          latitudeDelta: 0.0421,
+          longitudeDelta: 0.0421,
+        });
+      }).catch(err => {
+        console.log(err);
+      });*/
+
+      setTrips(prev => {
+        console.log('Trips : ', prev);
+        return prev.concat(history);
+      });
+      setRegion({
+        latitude: history[history.length - 1].latitude,
+        longitude: history[history.length - 1].longitude,
+        latitudeDelta: 0.0421,
+        longitudeDelta: 0.0421,
+      });
+      console.log('Region : ', region);
+      setHistory([]);
+      setDistance(0);
+      setLocation('');
+    }
     setEnabled(!enabled);
   }
 
@@ -74,8 +118,30 @@ const Homepage = props => {
   React.useEffect(() => {
     /// 1.  Subscribe to events.
     const onLocation = BackgroundGeolocation.onLocation(location => {
-      console.log('[onLocation]', location);
+      //console.log('[onLocation]', location);
       setLocation(JSON.stringify(location, null, 2));
+      console.log('Type of location : ', typeof location);
+      //setLocation(location);
+      setHistory(prev => {
+        setDistance(prevDistance => {
+          if (prev.length === 0) {
+            return 0;
+          }
+          const lastItem = prev[prev.length - 1];
+          let add = distance_(
+            lastItem.latitude,
+            location.coords.latitude,
+            lastItem.longitude,
+            location.coords.longitude,
+          );
+          return prevDistance + add;
+        });
+        console.log('Prev :', prev);
+        return prev.concat({
+          latitude: location.coords.latitude,
+          longitude: location.coords.longitude,
+        });
+      });
       setRegion({
         latitude: location.coords.latitude,
         longitude: location.coords.longitude,
@@ -100,7 +166,7 @@ const Homepage = props => {
     BackgroundGeolocation.ready({
       // Geolocation Config
       desiredAccuracy: BackgroundGeolocation.DESIRED_ACCURACY_HIGH,
-      distanceFilter: 10,
+      distanceFilter: 50,
       // Activity Recognition
       stopTimeout: 5,
       // Application config
@@ -110,16 +176,6 @@ const Homepage = props => {
       startOnBoot: true, // <-- Auto start tracking when device is powered-up.
       // HTTP / SQLite config
       url: 'http://yourserver.com/locations',
-      batchSync: false, // <-- [Default: false] Set true to sync locations to server in a single HTTP request.
-      autoSync: true, // <-- [Default: true] Set true to sync each location to server as it arrives.
-      headers: {
-        // <-- Optional HTTP headers
-        'X-FOO': 'bar',
-      },
-      params: {
-        // <-- Optional HTTP params
-        auth_token: 'maybe_your_server_authenticates_via_token_YES?',
-      },
     }).then(state => {
       setEnabled(state.enabled);
       console.log(
@@ -137,17 +193,6 @@ const Homepage = props => {
   }, []);
 
   React.useEffect(() => {
-    Geolocation.getCurrentPosition(pos => {
-      const crd = pos.coords;
-      setRegion({
-        latitude: crd.latitude,
-        longitude: crd.longitude,
-        latitudeDelta: 0.0421,
-        longitudeDelta: 0.0421,
-      });
-    }).catch(err => {
-      console.log(err);
-    });
     if (enabled) {
       BackgroundGeolocation.start();
     } else {
@@ -174,7 +219,7 @@ const Homepage = props => {
         style={{flex: 1}}
         initialRegion={region}
         region={region}>
-        <Marker coordinate={region} />
+        {region !== undefined && <Marker coordinate={region} />}
       </MapView>
 
       <View style={styles.footer}>
