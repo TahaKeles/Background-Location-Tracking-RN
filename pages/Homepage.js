@@ -20,6 +20,10 @@ import BackgroundGeolocation, {
 import Geolocation from '@react-native-community/geolocation';
 import MapView, {PROVIDER_GOOGLE, Marker, LatLng} from 'react-native-maps';
 
+import Icon from 'react-native-vector-icons/Ionicons';
+
+const myIcon = <Icon name="car" size={30} color="#900" />;
+
 function distance_(lat1, lat2, lon1, lon2) {
   // The math module contains a function
   // named toRadians which converts from
@@ -228,6 +232,8 @@ const Homepage = props => {
 
   return (
     <View style={{flex: 1, backgroundColor: '#f4f4f4'}}>
+      <Icon name="car" size={30} color="#900" />
+
       <MapView
         provider={PROVIDER_GOOGLE}
         style={{flex: 1}}
