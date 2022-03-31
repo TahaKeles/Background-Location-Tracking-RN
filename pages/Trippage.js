@@ -21,46 +21,8 @@ import MapView, {
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
-const DATA = [
-  {
-    id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-    title: 'First Item',
-  },
-  {
-    id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
-    title: 'Second Item',
-  },
-  {
-    id: '58694a0f-3da1-471f-bd96-145571e29d72',
-    title: 'Third Item',
-  },
-];
-
 const Trippage = props => {
   const {onProgressed, trips} = props.route.params;
-
-  console.log('onProgress : ', onProgressed);
-  console.log('Trips : ', trips[0].coords);
-
-  const coordinates = [
-    {
-      latitude: 22.306885,
-      longitude: 70.780538,
-    },
-    {
-      latitude: 22.310696,
-      longitude: 70.803152,
-    },
-    {
-      latitude: 22.293067,
-      longitude: 70.791559,
-    },
-    {
-      latitude: 22.306885,
-      longitude: 70.780538,
-    },
-  ];
-
   function Progressview() {
     if (onProgressed.length == 1) {
       return (

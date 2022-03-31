@@ -19,6 +19,7 @@ import BackgroundGeolocation, {
 
 import Geolocation from '@react-native-community/geolocation';
 import MapView, {PROVIDER_GOOGLE, Marker, LatLng} from 'react-native-maps';
+import TouchID from 'react-native-touch-id';
 
 import Icon from 'react-native-vector-icons/Ionicons';
 
@@ -74,34 +75,47 @@ const Homepage = props => {
   const [tripsOnProgress, setTripsOnProgress] = React.useState([]);
 
   function gotoTripPage() {
-    if (enabled) {
-      Geolocation.getCurrentPosition(pos => {
-        const crd = pos.coords;
-        console.log(crd);
-        setRegion({
-          latitude: crd.latitude,
-          longitude: crd.longitude,
-          latitudeDelta: 0.0421,
-          longitudeDelta: 0.0421,
-        });
-        props.navigation.navigate('Trippage', {
-          onProgressed: [
-            {
-              coords: {latitude: crd.latitude, longitude: crd.longitude},
-              distance: distance,
-            },
-          ],
-          trips: trips,
-        });
-      }).catch(err => {
-        console.log(err);
+    const optionalConfig = {
+      title: 'Authentication', // Android
+      color: '#000000', // Android,
+      fallbackLabel: 'Authentication for IOS', // iOS (if empty, then label is hidden)
+    };
+    TouchID.authenticate('You have to enter your touch id', optionalConfig)
+      .then(success => {
+        // Success code
+        if (enabled) {
+          Geolocation.getCurrentPosition(pos => {
+            const crd = pos.coords;
+            console.log(crd);
+            setRegion({
+              latitude: crd.latitude,
+              longitude: crd.longitude,
+              latitudeDelta: 0.0421,
+              longitudeDelta: 0.0421,
+            });
+            props.navigation.navigate('Trippage', {
+              onProgressed: [
+                {
+                  coords: {latitude: crd.latitude, longitude: crd.longitude},
+                  distance: distance,
+                },
+              ],
+              trips: trips,
+            });
+          }).catch(err => {
+            console.log(err);
+          });
+        } else {
+          props.navigation.navigate('Trippage', {
+            onProgressed: [],
+            trips: trips,
+          });
+        }
+      })
+      .catch(error => {
+        // Failure code
+        console.log('You can not enter this field.');
       });
-    } else {
-      props.navigation.navigate('Trippage', {
-        onProgressed: [],
-        trips: trips,
-      });
-    }
   }
   function openFreeDrive() {
     if (enabled) {
