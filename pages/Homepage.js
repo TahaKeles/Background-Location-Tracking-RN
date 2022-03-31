@@ -232,8 +232,6 @@ const Homepage = props => {
 
   return (
     <View style={{flex: 1, backgroundColor: '#f4f4f4'}}>
-      <Icon name="car" size={30} color="#900" />
-
       <MapView
         provider={PROVIDER_GOOGLE}
         style={{flex: 1}}
@@ -244,18 +242,6 @@ const Homepage = props => {
       </MapView>
 
       <View style={styles.footer}>
-        <View style={styles.freeDrivingButton}>
-          <TouchableOpacity
-            style={{flexDirection: 'row', justifyContent: 'space-between'}}
-            onPress={openFreeDrive}>
-            {enabled ? (
-              <View style={styles.lightOn} />
-            ) : (
-              <View style={styles.lightOff} />
-            )}
-            <Text style={styles.freeDrivingText}>Free Driving</Text>
-          </TouchableOpacity>
-        </View>
         <TouchableOpacity
           style={{
             justifyContent: 'center',
@@ -263,15 +249,61 @@ const Homepage = props => {
             borderRadius: 25,
             width: 50,
             height: 50,
-            backgroundColor: 'gray',
-            marginLeft: 30,
+            backgroundColor: '#F4F4F4',
+          }}
+          onPress={openFreeDrive}>
+          {enabled ? (
+            <Icon
+              name="pause"
+              size={48}
+              color="green"
+              style={{alignSelf: 'center'}}
+            />
+          ) : (
+            <Icon
+              name="play-circle"
+              size={48}
+              color="black"
+              style={{alignSelf: 'center'}}
+            />
+          )}
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={{
+            justifyContent: 'center',
+            alignContent: 'center',
+            borderRadius: 25,
+            width: 50,
+            height: 50,
+            backgroundColor: '#F4F4F4',
           }}
           onPress={goToCurrentLocation}>
-          <Text style={{alignSelf: 'center'}}>ORTA</Text>
+          <Icon
+            name="compass"
+            size={48}
+            color="black"
+            style={{alignSelf: 'center'}}
+          />
         </TouchableOpacity>
-        <View style={{marginLeft: 16, marginVertical: 4}}>
-          <Button onPress={gotoTripPage} title="Trips" color="black"></Button>
-        </View>
+
+        <TouchableOpacity
+          style={{
+            justifyContent: 'center',
+            alignContent: 'center',
+            borderRadius: 25,
+            width: 50,
+            height: 50,
+            backgroundColor: '#F4F4F4',
+          }}
+          onPress={gotoTripPage}>
+          <Icon
+            name="car"
+            size={48}
+            color="black"
+            style={{alignSelf: 'center'}}
+          />
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -288,7 +320,7 @@ const styles = StyleSheet.create({
     height: 80,
     backgroundColor: '#f4f4f4',
     flexDirection: 'row',
-    justifyContent: 'flex-start',
+    justifyContent: 'space-around',
     alignItems: 'center',
     alignContent: 'center',
   },
@@ -366,19 +398,17 @@ export {Homepage};
 /*
 
 
-    <View style={{flex: 1}}>
-      <MapView
-        provider={PROVIDER_GOOGLE}
-        style={{flex: 1}}
-        initialRegion={initialRegion}>
-        <SafeAreaView style={{flex: 1}}>
-          <Text style={{alignSelf: 'center'}}>Haritaya yaz allasen</Text>
-          <Text>Click to enable BackgroundGeolocation</Text>
-          <Switch value={enabled} onValueChange={setEnabled} />
-          <Text style={{fontSize: 12}}>{location}</Text>
-        </SafeAreaView>
-      </MapView>
-    </View>
-
+        <View style={styles.freeDrivingButton}>
+          <TouchableOpacity
+            style={{flexDirection: 'row', justifyContent: 'space-between'}}
+            onPress={openFreeDrive}>
+            {enabled ? (
+              <View style={styles.lightOn} />
+            ) : (
+              <View style={styles.lightOff} />
+            )}
+            <Text style={styles.freeDrivingText}>Free Driving</Text>
+          </TouchableOpacity>
+        </View>
 
 */
