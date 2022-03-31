@@ -168,13 +168,9 @@ const Homepage = props => {
         latitudeDelta: 0.02,
         longitudeDelta: 0.02,
       });
-      //console.log('History : ', history);
-      //console.log('Distance : ', distance);
       setTripsOnProgress(prev => {
         return [{coords: history, distance: distance}];
       });
-      //setTripsOnProgress([{coords: history, distance: distance}]);
-      //console.log('Trips on progress : ', tripsOnProgress);
     });
 
     const onMotionChange = BackgroundGeolocation.onMotionChange(event => {

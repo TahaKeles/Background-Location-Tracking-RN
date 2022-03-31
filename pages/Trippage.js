@@ -40,7 +40,7 @@ const Trippage = props => {
   const {onProgressed, trips} = props.route.params;
 
   console.log('onProgress : ', onProgressed);
-  console.log('Trips : ', trips);
+  console.log('Trips : ', trips[0].coords);
 
   const coordinates = [
     {
@@ -61,6 +61,34 @@ const Trippage = props => {
     },
   ];
 
+  function Progressview() {
+    if (onProgressed.length == 1) {
+      return (
+        <View style={styles.eachItem}>
+          <View style={styles.progressView}>
+            <Text style={styles.progressText}>Trip in Progress</Text>
+          </View>
+          <View style={styles.eachItemHeader}>
+            <Text>{onProgressed[0].distance}</Text>
+            <Text>65 Dolar</Text>
+          </View>
+          <MapView
+            provider={PROVIDER_GOOGLE}
+            style={{flex: 1}}
+            initialRegion={{
+              latitude: onProgressed[0].coords.latitude,
+              longitude: onProgressed[0].coords.longitude,
+              latitudeDelta: 0.0922,
+              longitudeDelta: 0.0421,
+            }}>
+            <Marker coordinate={onProgressed[0].coords} />
+          </MapView>
+        </View>
+      );
+    }
+    return null;
+  }
+
   const renderItem = ({item}) => (
     <View style={styles.eachItem}>
       <View style={styles.eachItemHeader}>
@@ -71,16 +99,15 @@ const Trippage = props => {
         provider={PROVIDER_GOOGLE}
         style={{flex: 1}}
         initialRegion={{
-          latitude: 22.30688,
-          longitude: 70.780538,
-          latitudeDelta: 0.0922,
+          latitude: item.coords[0].latitude,
+          longitude: item.coords[0].longitude,
+          latitudeDelta: 0.0421,
           longitudeDelta: 0.0421,
         }}>
-        <Marker coordinate={coordinates[0]} />
-        <Marker coordinate={coordinates[1]} />
-        <Marker coordinate={coordinates[2]} />
+        <Marker coordinate={item.coords[0]} />
+        <Marker coordinate={item.coords[item.coords.length - 1]} />
         <Polyline
-          coordinates={coordinates}
+          coordinates={item.coords}
           strokeColor="#000"
           strokeColors={['#7F0000']}
           strokeWidth={5}
@@ -95,17 +122,19 @@ const Trippage = props => {
         <Text style={styles.headerText}>Trips</Text>
       </View>
       <FlatList
+        ListHeaderComponent={<Progressview />}
         showsVerticalScrollIndicator={false}
-        data={DATA}
+        data={trips}
         renderItem={renderItem}
         keyExtractor={item => item.id}
-        style={{}}
       />
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
+  progressView: {height: 30, alignContent: 'center', justifyContent: 'center'},
+  progressText: {alignSelf: 'center', color: 'gray', fontSize: 18},
   eachItemHeader: {
     height: 30,
     //backgroundColor: '#f4f4f4',
