@@ -10,6 +10,8 @@ import {
   TextInput,
 } from 'react-native';
 
+import mapStyle from '../mapStyle.json';
+
 import BackgroundGeolocation, {
   Location,
   Subscription,
@@ -225,23 +227,13 @@ const Homepage = props => {
   }, [enabled]);
 
   return (
-    <SafeAreaView style={{flex: 1, backgroundColor: '#f4f4f4'}}>
-      <View style={styles.header}>
-        <View style={{marginLeft: 16, marginVertical: 4}}>
-          <Button onPress={gotoTripPage} title="Trips" color="black"></Button>
-        </View>
-        <TextInput
-          style={styles.input}
-          onChangeText={onChangeText}
-          value={text}
-        />
-      </View>
-
+    <View style={{flex: 1, backgroundColor: '#f4f4f4'}}>
       <MapView
         provider={PROVIDER_GOOGLE}
         style={{flex: 1}}
         initialRegion={region}
-        region={region}>
+        region={region}
+        customMapStyle={mapStyle}>
         {region !== undefined && <Marker coordinate={region} />}
       </MapView>
 
@@ -267,15 +259,15 @@ const Homepage = props => {
             height: 50,
             backgroundColor: 'gray',
             marginLeft: 30,
-            marginTop: 15,
           }}
           onPress={goToCurrentLocation}>
           <Text style={{alignSelf: 'center'}}>ORTA</Text>
         </TouchableOpacity>
-
-        <Text style={styles.kmText}>{distance} KM </Text>
+        <View style={{marginLeft: 16, marginVertical: 4}}>
+          <Button onPress={gotoTripPage} title="Trips" color="black"></Button>
+        </View>
       </View>
-    </SafeAreaView>
+    </View>
   );
 };
 
@@ -287,7 +279,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   footer: {
-    height: 50,
+    height: 80,
     backgroundColor: '#f4f4f4',
     flexDirection: 'row',
     justifyContent: 'flex-start',
@@ -339,7 +331,6 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   freeDrivingButton: {
-    marginTop: 15,
     marginLeft: 30,
     backgroundColor: '#4B6277',
     borderRadius: 14,
