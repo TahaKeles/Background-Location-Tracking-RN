@@ -19,41 +19,26 @@ import BackgroundGeolocation, {
 
 import Geolocation from '@react-native-community/geolocation';
 import MapView, {PROVIDER_GOOGLE, Marker, LatLng} from 'react-native-maps';
-import TouchID from 'react-native-touch-id';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import Icon from 'react-native-vector-icons/Ionicons';
 
-const myIcon = <Icon name="car" size={30} color="#900" />;
-
 function distance_(lat1, lat2, lon1, lon2) {
-  // The math module contains a function
-  // named toRadians which converts from
-  // degrees to radians.
-
   lon1 = Number(lon1);
   lon2 = Number(lon2);
   lat1 = Number(lat1);
   lat2 = Number(lat2);
-
   lon1 = (lon1 * Math.PI) / 180;
   lon2 = (lon2 * Math.PI) / 180;
   lat1 = (lat1 * Math.PI) / 180;
   lat2 = (lat2 * Math.PI) / 180;
-
-  // Haversine formula
   let dlon = lon2 - lon1;
   let dlat = lat2 - lat1;
   let a =
     Math.pow(Math.sin(dlat / 2), 2) +
     Math.cos(lat1) * Math.cos(lat2) * Math.pow(Math.sin(dlon / 2), 2);
-
   let c = 2 * Math.asin(Math.sqrt(a));
-
-  // Radius of earth in kilometers. Use 3956
-  // for miles
   let r = 6371;
-
-  // calculate the result
   return c * r;
 }
 
@@ -75,7 +60,7 @@ const Homepage = props => {
   const [tripsOnProgress, setTripsOnProgress] = React.useState([]);
 
   function gotoTripPage() {
-    const optionalConfig = {
+    /*const optionalConfig = {
       title: 'Authentication', // Android
       color: '#000000', // Android,
       fallbackLabel: 'Authentication for IOS', // iOS (if empty, then label is hidden)
@@ -115,9 +100,37 @@ const Homepage = props => {
       .catch(error => {
         // Failure code
         console.log('You can not enter this field.');
+      });*/
+    if (enabled) {
+      Geolocation.getCurrentPosition(pos => {
+        const crd = pos.coords;
+        console.log(crd);
+        setRegion({
+          latitude: crd.latitude,
+          longitude: crd.longitude,
+          latitudeDelta: 0.0421,
+          longitudeDelta: 0.0421,
+        });
+        props.navigation.navigate('Trippage', {
+          onProgressed: [
+            {
+              coords: {latitude: crd.latitude, longitude: crd.longitude},
+              distance: distance,
+            },
+          ],
+          trips: trips,
+        });
+      }).catch(err => {
+        console.log(err);
       });
+    } else {
+      props.navigation.navigate('Trippage', {
+        onProgressed: [],
+        trips: trips,
+      });
+    }
   }
-  function openFreeDrive() {
+  async function openFreeDrive() {
     if (enabled) {
       setTrips(prev => {
         if (prev.length === 0) {
@@ -139,7 +152,36 @@ const Homepage = props => {
       setDistance(0);
       setLocation('');
       setTripsOnProgress([]);
+
+      let value = await AsyncStorage.getItem('@trip_data');
+      //console.log('Value : ', typeof value);
+      //console.log('Value : ', value);
+
+      if (value !== null) {
+        let valueParse = JSON.parse(value);
+        await AsyncStorage.setItem(
+          '@trip_data',
+          JSON.stringify(
+            valueParse.concat({
+              coords: history,
+              distance: distance,
+            }),
+          ),
+        );
+      } else {
+        await AsyncStorage.setItem(
+          '@trip_data',
+          JSON.stringify([{coords: history, distance: distance}]),
+        );
+      }
+
+      let member_list = AsyncStorage.getItem('@trip_data').then(results => {
+        return JSON.parse(results);
+      });
+      //let data = await member_list;
+      //await AsyncStorage.setItem('@trip_data', JSON.stringify(trips));
     }
+
     setEnabled(!enabled);
     //console.log('Trips : ', trips);
   }

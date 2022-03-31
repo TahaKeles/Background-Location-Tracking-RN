@@ -11,18 +11,47 @@ import {
 } from 'react-native';
 import mapStyle from '../mapStyle.json';
 import Geolocation from '@react-native-community/geolocation';
+import {useFocusEffect} from '@react-navigation/native';
+
 import MapView, {
   PROVIDER_GOOGLE,
   Marker,
   LatLng,
   Polyline,
 } from 'react-native-maps';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
 const Trippage = props => {
   const {onProgressed, trips} = props.route.params;
+  const [tripss, setTripss] = React.useState([]);
+
+  const tripsss = async () => {
+    await AsyncStorage.getItem('@trip_data').then(results => {
+      console.log(JSON.parse(results));
+      console.log(typeof JSON.parse(results));
+      setTripss(JSON.parse(results));
+    });
+  };
+
+  //tripsss();
+
+  //AsyncStorage.clear();
+  //show_trips();
+
+  /* useFocusEffect(
+    React.useCallback(() => {
+      tripsss();
+    }, []),
+  );
+*/
+  React.useEffect(() => {
+    tripsss();
+    console.log('Trips : ', tripss);
+  }, []);
+
   function Progressview() {
     if (onProgressed.length == 1) {
       return (
@@ -108,7 +137,7 @@ const Trippage = props => {
       <FlatList
         ListHeaderComponent={<Progressview />}
         showsVerticalScrollIndicator={false}
-        data={trips.reverse()}
+        data={tripss.reverse()}
         renderItem={renderItem}
         keyExtractor={item => item.id}
       />
