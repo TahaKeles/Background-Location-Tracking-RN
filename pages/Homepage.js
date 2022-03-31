@@ -239,6 +239,21 @@ const Homepage = props => {
         region={region}
         customMapStyle={mapStyle}>
         {region !== undefined && <Marker coordinate={region} />}
+        <SafeAreaView style={styles.safeAreaKM}>
+          <View style={styles.kmView}>
+            <Icon
+              name="speedometer"
+              size={24}
+              color="black"
+              style={{alignSelf: 'center', marginLeft: 8}}
+            />
+            {distance < 1 ? (
+              <Text style={styles.textKM}>{distance.toFixed(2) * 1000} M</Text>
+            ) : (
+              <Text style={styles.textKM}>{distance.toFixed(2)} KM</Text>
+            )}
+          </View>
+        </SafeAreaView>
       </MapView>
 
       <View style={styles.footer}>
@@ -310,6 +325,24 @@ const Homepage = props => {
 };
 
 const styles = StyleSheet.create({
+  safeAreaKM: {justifyContent: 'center', alignContent: 'center'},
+  textKM: {
+    alignSelf: 'center',
+    fontSize: 20,
+    fontWeight: '600',
+    marginRight: 4,
+  },
+  kmView: {
+    alignSelf: 'center',
+    borderRadius: 18,
+    width: 120,
+    height: 50,
+    marginTop: 32,
+    backgroundColor: 'white',
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignContent: 'center',
+  },
   kmText: {
     marginTop: 15,
     fontSize: 24,
