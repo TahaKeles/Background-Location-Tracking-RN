@@ -9,7 +9,7 @@ import {
   Dimensions,
   TouchableWithoutFeedback,
 } from 'react-native';
-
+import mapStyle from '../mapStyle.json';
 import Geolocation from '@react-native-community/geolocation';
 import MapView, {
   PROVIDER_GOOGLE,
@@ -69,12 +69,23 @@ const Trippage = props => {
             <Text style={styles.progressText}>Trip in Progress</Text>
           </View>
           <View style={styles.eachItemHeader}>
-            <Text>{onProgressed[0].distance}</Text>
-            <Text>65 Dolar</Text>
+            <Text style={{fontSize: 18, fontWeight: '600', marginLeft: 6}}>
+              {onProgressed[0].distance.toFixed(2)} KM
+            </Text>
+            <Text
+              style={{
+                fontSize: 18,
+                fontWeight: '600',
+                color: 'green',
+                marginRight: 6,
+              }}>
+              ${(onProgressed[0].distance.toFixed(2) * 0.56).toFixed(2)}
+            </Text>
           </View>
           <MapView
             provider={PROVIDER_GOOGLE}
-            style={{flex: 1}}
+            style={{flex: 1, borderRadius: 12}}
+            customMapStyle={mapStyle}
             initialRegion={{
               latitude: onProgressed[0].coords.latitude,
               longitude: onProgressed[0].coords.longitude,
@@ -92,12 +103,23 @@ const Trippage = props => {
   const renderItem = ({item}) => (
     <View style={styles.eachItem}>
       <View style={styles.eachItemHeader}>
-        <Text>115 KM</Text>
-        <Text>65 Dolar</Text>
+        <Text style={{fontSize: 18, fontWeight: '600', marginLeft: 6}}>
+          {item.distance.toFixed(2)} KM
+        </Text>
+        <Text
+          style={{
+            fontSize: 18,
+            fontWeight: '600',
+            color: 'green',
+            marginRight: 6,
+          }}>
+          ${(item.distance.toFixed(2) * 0.56).toFixed(2)}
+        </Text>
       </View>
       <MapView
         provider={PROVIDER_GOOGLE}
-        style={{flex: 1}}
+        customMapStyle={mapStyle}
+        style={{flex: 1, borderRadius: 12}}
         initialRegion={{
           latitude: item.coords[0].latitude,
           longitude: item.coords[0].longitude,
@@ -124,7 +146,7 @@ const Trippage = props => {
       <FlatList
         ListHeaderComponent={<Progressview />}
         showsVerticalScrollIndicator={false}
-        data={trips}
+        data={trips.reverse()}
         renderItem={renderItem}
         keyExtractor={item => item.id}
       />
@@ -134,10 +156,14 @@ const Trippage = props => {
 
 const styles = StyleSheet.create({
   progressView: {height: 30, alignContent: 'center', justifyContent: 'center'},
-  progressText: {alignSelf: 'center', color: 'gray', fontSize: 18},
+  progressText: {
+    alignSelf: 'center',
+    color: 'gray',
+    fontSize: 20,
+    fontWeight: '500',
+  },
   eachItemHeader: {
     height: 30,
-    //backgroundColor: '#f4f4f4',
     backgroundColor: 'white',
     flexDirection: 'row',
     alignContent: 'space-between',
