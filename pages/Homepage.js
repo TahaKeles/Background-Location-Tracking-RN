@@ -1,13 +1,10 @@
 import React from 'react';
 import {
-  Switch,
   Text,
   SafeAreaView,
   View,
-  Button,
   StyleSheet,
   TouchableOpacity,
-  TextInput,
 } from 'react-native';
 
 import mapStyle from '../mapStyle.json';
@@ -17,9 +14,10 @@ import BackgroundGeolocation, {
   Subscription,
 } from 'react-native-background-geolocation';
 
-import Geolocation from '@react-native-community/geolocation';
 import MapView, {PROVIDER_GOOGLE, Marker, LatLng} from 'react-native-maps';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Geolocation from 'react-native-geolocation-service';
+import TouchID from 'react-native-touch-id';
 
 import Icon from 'react-native-vector-icons/Ionicons';
 
@@ -57,7 +55,7 @@ const Homepage = props => {
   const [tripsOnProgress, setTripsOnProgress] = React.useState([]);
 
   function gotoTripPage() {
-    /*const optionalConfig = {
+    const optionalConfig = {
       title: 'Authentication', // Android
       color: '#000000', // Android,
       fallbackLabel: 'Authentication for IOS', // iOS (if empty, then label is hidden)
@@ -66,27 +64,33 @@ const Homepage = props => {
       .then(success => {
         // Success code
         if (enabled) {
-          Geolocation.getCurrentPosition(pos => {
-            const crd = pos.coords;
-            console.log(crd);
-            setRegion({
-              latitude: crd.latitude,
-              longitude: crd.longitude,
-              latitudeDelta: 0.0421,
-              longitudeDelta: 0.0421,
-            });
-            props.navigation.navigate('Trippage', {
-              onProgressed: [
-                {
-                  coords: {latitude: crd.latitude, longitude: crd.longitude},
-                  distance: distance,
-                },
-              ],
-              trips: trips,
-            });
-          }).catch(err => {
-            console.log(err);
-          });
+          Geolocation.getCurrentPosition(
+            position => {
+              console.log(position);
+              setRegion({
+                latitude: position.coords.latitude,
+                longitude: position.coords.longitude,
+                latitudeDelta: 0.0421,
+                longitudeDelta: 0.0421,
+              });
+              props.navigation.navigate('Trippage', {
+                onProgressed: [
+                  {
+                    coords: {
+                      latitude: position.coords.latitude,
+                      longitude: position.coords.longitude,
+                    },
+                    distance: distance,
+                  },
+                ],
+                trips: trips,
+              });
+            },
+            error => {
+              console.log(error.code, error.message);
+            },
+            {enableHighAccuracy: false, timeout: 15000},
+          );
         } else {
           props.navigation.navigate('Trippage', {
             onProgressed: [],
@@ -97,35 +101,7 @@ const Homepage = props => {
       .catch(error => {
         // Failure code
         console.log('You can not enter this field.');
-      });*/
-    if (enabled) {
-      Geolocation.getCurrentPosition(pos => {
-        const crd = pos.coords;
-        console.log(crd);
-        setRegion({
-          latitude: crd.latitude,
-          longitude: crd.longitude,
-          latitudeDelta: 0.0421,
-          longitudeDelta: 0.0421,
-        });
-        props.navigation.navigate('Trippage', {
-          onProgressed: [
-            {
-              coords: {latitude: crd.latitude, longitude: crd.longitude},
-              distance: distance,
-            },
-          ],
-          trips: trips,
-        });
-      }).catch(err => {
-        console.log(err);
       });
-    } else {
-      props.navigation.navigate('Trippage', {
-        onProgressed: [],
-        trips: trips,
-      });
-    }
   }
   async function openFreeDrive() {
     if (enabled) {
@@ -168,27 +144,26 @@ const Homepage = props => {
           JSON.stringify([{coords: history, distance: distance}]),
         );
       }
-
-      let member_list = AsyncStorage.getItem('@trip_data').then(results => {
-        return JSON.parse(results);
-      });
     }
     setEnabled(!enabled);
   }
 
   function goToCurrentLocation() {
-    Geolocation.getCurrentPosition(pos => {
-      const crd = pos.coords;
-      console.log(crd);
-      setRegion({
-        latitude: crd.latitude,
-        longitude: crd.longitude,
-        latitudeDelta: 0.0421,
-        longitudeDelta: 0.0421,
-      });
-    }).catch(err => {
-      console.log(err);
-    });
+    Geolocation.getCurrentPosition(
+      position => {
+        console.log(position);
+        setRegion({
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
+          latitudeDelta: 0.0421,
+          longitudeDelta: 0.0421,
+        });
+      },
+      error => {
+        console.log(error.code, error.message);
+      },
+      {enableHighAccuracy: false, timeout: 15000},
+    );
   }
 
   React.useEffect(() => {
