@@ -45,8 +45,6 @@ function distance_(lat1, lat2, lon1, lon2) {
 const Homepage = props => {
   const [enabled, setEnabled] = React.useState(false);
   const [location, setLocation] = React.useState('');
-  const [coord, setCoord] = React.useState(LatLng);
-  const [text, onChangeText] = React.useState('Useless Text');
   const [distance, setDistance] = React.useState(0);
   const [history, setHistory] = React.useState([]);
   const [trips, setTrips] = React.useState([]);
@@ -56,7 +54,6 @@ const Homepage = props => {
     latitudeDelta: 0.0421,
     longitudeDelta: 0.0421,
   });
-
   const [tripsOnProgress, setTripsOnProgress] = React.useState([]);
 
   function gotoTripPage() {
@@ -154,9 +151,6 @@ const Homepage = props => {
       setTripsOnProgress([]);
 
       let value = await AsyncStorage.getItem('@trip_data');
-      //console.log('Value : ', typeof value);
-      //console.log('Value : ', value);
-
       if (value !== null) {
         let valueParse = JSON.parse(value);
         await AsyncStorage.setItem(
@@ -178,12 +172,8 @@ const Homepage = props => {
       let member_list = AsyncStorage.getItem('@trip_data').then(results => {
         return JSON.parse(results);
       });
-      //let data = await member_list;
-      //await AsyncStorage.setItem('@trip_data', JSON.stringify(trips));
     }
-
     setEnabled(!enabled);
-    //console.log('Trips : ', trips);
   }
 
   function goToCurrentLocation() {
@@ -257,7 +247,7 @@ const Homepage = props => {
       // Application config
       debug: true, // <-- enable this hear sounds for background-geolocation life-cycle.
       logLevel: BackgroundGeolocation.LOG_LEVEL_VERBOSE,
-      stopOnTerminate: false, // <-- Allow the background-service to continue tracking when user closes the app.
+      stopOnTerminate: true, // <-- Allow the background-service to continue tracking when user closes the app.
       startOnBoot: true, // <-- Auto start tracking when device is powered-up.
       // HTTP / SQLite config
       url: 'http://yourserver.com/locations',
@@ -294,23 +284,26 @@ const Homepage = props => {
         initialRegion={region}
         region={region}
         customMapStyle={mapStyle}>
-        {region !== undefined && <Marker coordinate={region} />}
-        <SafeAreaView style={styles.safeAreaKM}>
-          <View style={styles.kmView}>
-            <Icon
-              name="speedometer"
-              size={24}
-              color="black"
-              style={{alignSelf: 'center', marginLeft: 8}}
-            />
-            {distance < 1 ? (
-              <Text style={styles.textKM}>{distance.toFixed(2) * 1000} M</Text>
-            ) : (
-              <Text style={styles.textKM}>{distance.toFixed(2)} KM</Text>
-            )}
-          </View>
-        </SafeAreaView>
+        {region !== undefined && (
+          <Marker coordinate={region} pinColor={'#458ff7'} />
+        )}
       </MapView>
+
+      <SafeAreaView style={styles.safeAreaKM}>
+        <SafeAreaView style={styles.kmView}>
+          <Icon
+            name="speedometer"
+            size={24}
+            color="black"
+            style={{alignSelf: 'center', marginLeft: 8}}
+          />
+          {distance < 1 ? (
+            <Text style={styles.textKM}>{distance.toFixed(2) * 1000} M</Text>
+          ) : (
+            <Text style={styles.textKM}>{distance.toFixed(2)} KM</Text>
+          )}
+        </SafeAreaView>
+      </SafeAreaView>
 
       <View style={styles.footer}>
         <TouchableOpacity
@@ -381,7 +374,12 @@ const Homepage = props => {
 };
 
 const styles = StyleSheet.create({
-  safeAreaKM: {justifyContent: 'center', alignContent: 'center'},
+  safeAreaKM: {
+    position: 'absolute',
+    justifyContent: 'center',
+    alignContent: 'center',
+    alignSelf: 'center',
+  },
   textKM: {
     alignSelf: 'center',
     fontSize: 20,
@@ -483,21 +481,3 @@ const styles = StyleSheet.create({
 });
 
 export {Homepage};
-
-/*
-
-
-        <View style={styles.freeDrivingButton}>
-          <TouchableOpacity
-            style={{flexDirection: 'row', justifyContent: 'space-between'}}
-            onPress={openFreeDrive}>
-            {enabled ? (
-              <View style={styles.lightOn} />
-            ) : (
-              <View style={styles.lightOff} />
-            )}
-            <Text style={styles.freeDrivingText}>Free Driving</Text>
-          </TouchableOpacity>
-        </View>
-
-*/

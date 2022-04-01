@@ -1,27 +1,16 @@
 import React from 'react';
 import {
-  Switch,
   Text,
   SafeAreaView,
   View,
   StyleSheet,
   FlatList,
   Dimensions,
-  TouchableWithoutFeedback,
 } from 'react-native';
 import mapStyle from '../mapStyle.json';
-import Geolocation from '@react-native-community/geolocation';
-import {useFocusEffect} from '@react-navigation/native';
-
-import MapView, {
-  PROVIDER_GOOGLE,
-  Marker,
-  LatLng,
-  Polyline,
-} from 'react-native-maps';
+import MapView, {PROVIDER_GOOGLE, Marker, Polyline} from 'react-native-maps';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
 const Trippage = props => {
@@ -35,21 +24,8 @@ const Trippage = props => {
       setTripss(JSON.parse(results));
     });
   };
-
-  //tripsss();
-
-  //AsyncStorage.clear();
-  //show_trips();
-
-  /* useFocusEffect(
-    React.useCallback(() => {
-      tripsss();
-    }, []),
-  );
-*/
   React.useEffect(() => {
     tripsss();
-    console.log('Trips : ', tripss);
   }, []);
 
   function Progressview() {
@@ -83,7 +59,7 @@ const Trippage = props => {
               latitudeDelta: 0.0922,
               longitudeDelta: 0.0421,
             }}>
-            <Marker coordinate={onProgressed[0].coords} />
+            <Marker coordinate={onProgressed[0].coords} pinColor={'#458ff7'} />
           </MapView>
         </View>
       );
@@ -117,12 +93,15 @@ const Trippage = props => {
           latitudeDelta: 0.0421,
           longitudeDelta: 0.0421,
         }}>
-        <Marker coordinate={item.coords[0]} />
-        <Marker coordinate={item.coords[item.coords.length - 1]} />
+        <Marker coordinate={item.coords[0]} pinColor={'red'} />
+        <Marker
+          coordinate={item.coords[item.coords.length - 1]}
+          pinColor={'green'}
+        />
         <Polyline
           coordinates={item.coords}
           strokeColor="#000"
-          strokeColors={['#7F0000']}
+          strokeColors={['white']}
           strokeWidth={5}
         />
       </MapView>
@@ -166,14 +145,12 @@ const styles = StyleSheet.create({
     marginHorizontal: 32,
     height: windowHeight * 0.3,
     borderRadius: 12,
-    //backgroundColor: '#f4f4f4',
     backgroundColor: 'white',
     justifyContent: 'center',
     alignContent: 'center',
   },
   header: {
     height: 50,
-    //backgroundColor: '#f4f4f4',
     backgroundColor: 'white',
     flexDirection: 'row',
     justifyContent: 'center',
