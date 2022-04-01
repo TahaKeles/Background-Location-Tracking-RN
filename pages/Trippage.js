@@ -19,9 +19,11 @@ const Trippage = props => {
 
   const tripsss = async () => {
     await AsyncStorage.getItem('@trip_data').then(results => {
-      console.log(JSON.parse(results));
-      console.log(typeof JSON.parse(results));
-      setTripss(JSON.parse(results));
+      if (results === null) {
+        setTripss([]);
+      } else {
+        setTripss(JSON.parse(results));
+      }
     });
   };
   React.useEffect(() => {
